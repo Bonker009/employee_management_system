@@ -1,3 +1,4 @@
+#include <optional>
 #include <list>
 #include <iostream>
 #include <iomanip>
@@ -38,12 +39,28 @@ public:
         const int maxAge = 65;
         return (age >= minAge && age <= maxAge);
     }
-    //for sorting by salary in ascending
+    // check if employee is already existed
+    bool searchByIdValidation(int id)
+    {
+        return (this->id == id);
+    }
+    optional<Employee> searchEmployeeById(const list<Employee> &employees, int id)
+    {
+        for (const auto &emp : employees)
+        {
+            if (emp.id == id)
+                return emp;
+        }
+
+        return std::nullopt; // Employee not found
+    }
+
+    // for sorting by salary in ascending
     static bool salaryAscend(const Employee &emp1, const Employee &emp2)
     {
         return emp1.salary < emp2.salary;
     }
-    //for sorting by salary in descending
+    // for sorting by salary in descending
     static bool salaryDescend(const Employee &emp1, const Employee &emp2)
     {
         return emp1.salary > emp2.salary;
@@ -104,7 +121,6 @@ public:
                 break;
             cout << "Invalid email format! Please enter a valid email address." << endl;
         }
-
         while (true)
         {
             cout << "Enter employee Phone Number: ";
@@ -121,3 +137,6 @@ public:
         return is;
     }
 };
+int main()
+{
+}
