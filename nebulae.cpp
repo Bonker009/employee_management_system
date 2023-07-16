@@ -4,6 +4,8 @@
 #include <iomanip>
 #include <math.h>
 #include <algorithm>
+#include <iostream>
+#include <fstream>
 #include <regex>
 using namespace std;
 // contact information of employee which includes email,address,phone number
@@ -31,6 +33,35 @@ public:
     {
         return id;
     }
+    string getName() const
+    {
+        return name;
+    }
+    double getSalary() const
+    {
+        return salary;
+    }
+    int getAge() const
+    {
+        return age;
+    }
+    string getDepartment() const
+    {
+        return department;
+    }
+    ContactInfo getContactInfo() const
+    {
+        return contactInfo;
+    }
+    string getSex() const
+    {
+        return sex;
+    }
+    string getDesignation() const
+    {
+        return designation;
+    }
+
     // default constructor for employees
     Employee() : id(0), name("N/A"), salary(0), age(0), department("N/A") {}
     // initial constructor for employees
@@ -79,7 +110,7 @@ public:
            << setw(20) << "Department"
            << setw(10) << "Sex"
            << setw(20) << "Designation"
-           << setw(25) << "Email"
+           << setw(30) << "Email"
            << setw(18) << "Phone Number"
            << setw(35) << "Address" << endl;
 
@@ -90,7 +121,7 @@ public:
            << setw(20) << emp.department
            << setw(10) << emp.sex
            << setw(20) << emp.designation
-           << setw(25) << emp.contactInfo.email
+           << setw(30) << emp.contactInfo.email
            << setw(18) << emp.contactInfo.phoneNumber
            << setw(35) << emp.contactInfo.address;
 
@@ -160,6 +191,7 @@ int main()
     list<Employee> employees;
     int press;
     int choice;
+
     do
     {
         system("cls");
@@ -178,10 +210,15 @@ int main()
         case 1:
         {
             system("cls");
+            fstream file("employees.dat", ios::app);
             Employee emp;
             cin >> emp;
             employees.push_back(emp);
+            const ContactInfo &info = emp.getContactInfo();
             cout << "Employee added successfully." << endl;
+            file << emp.getID() << " " << emp.getName() << " " << emp.getSalary() << " " << emp.getAge() << " " << emp.getDepartment() << " "
+                 << emp.getSex() << " " << emp.getDesignation() << " " << info.email << " " << info.phoneNumber
+                 << " " << info.address << endl;
             break;
         }
         case 2:
@@ -204,6 +241,7 @@ int main()
                 system("cls");
                 cout << "Employee not found." << endl;
             }
+            cout << endl;
             cout << "Press Enter to continue..." << endl;
             cin.ignore();
             cin.get();
@@ -212,6 +250,35 @@ int main()
         case 3:
         {
             system("cls");
+            fstream file("employees.dat", ios::in);
+            if (!file)
+            {
+                cout << "File not found!" << endl;
+                break;
+            }
+
+            // Clear the employees list before loading data
+            employees.clear();
+
+            int empId;
+            string empName;
+            double empSalary;
+            int empAge;
+            string empDepartment;
+            string empSex;
+            string empDesignation;
+            string empEmail;
+            string empPhoneNumber;
+            string empAddress;
+
+            while (file >> empId >> empName >> empSalary >> empAge >> empDepartment >> empSex >> empDesignation >> empEmail >> empPhoneNumber >> empAddress)
+            {
+                ContactInfo empContactInfo = {empEmail, empPhoneNumber, empAddress};
+                Employee emp(empId, empName, empSalary, empAge, empDepartment, empSex, empDesignation, empContactInfo);
+                employees.push_back(emp);
+            }
+
+            file.close();
             if (employees.empty())
             {
                 cout << "No employees to display." << endl;
@@ -219,12 +286,14 @@ int main()
             else
             {
                 cout << "All Employees:" << endl;
+                cout << endl;
                 for (const auto &emp : employees)
                 {
                     cout << emp << endl;
                 }
 
                 int sortChoice;
+                cout << endl;
                 cout << "Sort employees by: " << endl;
                 cout << "1.(Ascending)" << endl;
                 cout << "2.(Descending)" << endl;
@@ -249,19 +318,19 @@ int main()
                     cout << "Invalid choice. Sorting skipped." << endl;
                     break;
                 }
-
+                cout << endl;
                 cout << "Sorted Employees:" << endl;
                 for (const auto &emp : employees)
                 {
                     cout << emp << endl;
                 }
             }
+            cout << endl;
             cout << "Press Enter to continue..." << endl;
             cin.ignore();
             cin.get();
             break;
         }
-            using namespace std;
 
         case 5:
         {
@@ -273,9 +342,9 @@ int main()
             }
             else
             {
-                cout << "Enter employee ID to delete: " << endl;
+                cout << "Enter employee ID to delete: ";
                 cin >> delID;
-
+                system("cls");
                 auto predicate = [delID](const Employee &employee)
                 {
                     return employee.getID() == delID;
@@ -285,7 +354,9 @@ int main()
                 if (removeIt != employees.end())
                 {
                     cout << "This employee information will be deleted" << endl;
+                    cout << endl;
                     cout << *removeIt << endl;
+                    cout << endl;
 
                     employees.erase(removeIt, employees.end());
                     cout << "Employee deleted successfully." << endl;
