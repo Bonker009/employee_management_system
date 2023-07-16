@@ -27,6 +27,10 @@ private:
     string designation;
 
 public:
+    int getID() const
+    {
+        return id;
+    }
     // default constructor for employees
     Employee() : id(0), name("N/A"), salary(0), age(0), department("N/A") {}
     // initial constructor for employees
@@ -55,26 +59,40 @@ public:
         return std::nullopt; // Employee not found
     }
 
-    // for sorting by salary in ascending
-    static bool salaryAscend(const Employee &emp1, const Employee &emp2)
-    {
-        return emp1.salary < emp2.salary;
-    }
-    // for sorting by salary in descending
-    static bool salaryDescend(const Employee &emp1, const Employee &emp2)
-    {
-        return emp1.salary > emp2.salary;
-    }
+    // // for sorting by salary in ascending
+    // static bool salaryAscend(const Employee &emp1, const Employee &emp2)
+    // {
+    //     return emp1.salary < emp2.salary;
+    // }
+    // // for sorting by salary in descending
+    // static bool salaryDescend(const Employee &emp1, const Employee &emp2)
+    // {
+    //     return emp1.salary > emp2.salary;
+    // }
     // for displaying the information about employees
     friend ostream &operator<<(ostream &os, const Employee &emp)
     {
-        os << left << setw(8) << "ID" << setw(15) << "Name" << setw(12) << "Salary" << setw(8) << "Age"
-           << setw(20) << "Department" << setw(10) << "Sex" << setw(20) << "Designation"
-           << setw(25) << "Email" << setw(18) << "Phone Number" << setw(35) << "Address" << endl;
+        os << left << setw(8) << "ID"
+           << setw(15) << "Name"
+           << setw(12) << "Salary"
+           << setw(8) << "Age"
+           << setw(20) << "Department"
+           << setw(10) << "Sex"
+           << setw(20) << "Designation"
+           << setw(25) << "Email"
+           << setw(18) << "Phone Number"
+           << setw(35) << "Address" << endl;
 
-        os << left << setw(8) << emp.id << setw(15) << emp.name << setw(12) << fixed << setprecision(2) << emp.salary << setw(8) << emp.age
-           << setw(20) << emp.department << setw(10) << emp.sex << setw(20) << emp.designation
-           << setw(25) << emp.contactInfo.email << setw(18) << emp.contactInfo.phoneNumber << setw(35) << emp.contactInfo.address;
+        os << left << setw(8) << emp.id
+           << setw(15) << emp.name
+           << setw(12) << fixed << setprecision(2) << emp.salary
+           << setw(8) << emp.age
+           << setw(20) << emp.department
+           << setw(10) << emp.sex
+           << setw(20) << emp.designation
+           << setw(25) << emp.contactInfo.email
+           << setw(18) << emp.contactInfo.phoneNumber
+           << setw(35) << emp.contactInfo.address;
 
         return os;
     }
@@ -139,4 +157,167 @@ public:
 };
 int main()
 {
+    list<Employee> employees;
+    int press;
+    int choice;
+    do
+    {
+        system("cls");
+        cout << "Employee Management System" << endl;
+        cout << "1. Add Employee" << endl;
+        cout << "2. Search Employee by ID" << endl;
+        cout << "3. Display All Employees" << endl;
+        cout << "4. Update Employee" << endl;
+        cout << "5. Delete Employee" << endl;
+        cout << "6. Exit" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice)
+        {
+        case 1:
+        {
+            system("cls");
+            Employee emp;
+            cin >> emp;
+            employees.push_back(emp);
+            cout << "Employee added successfully." << endl;
+            break;
+        }
+        case 2:
+        {
+            system("cls");
+            int searchId;
+            cout << "Enter employee ID to search: ";
+            cin >> searchId;
+
+            Employee emp; // Create an instance of the Employee class
+            optional<Employee> result = emp.searchEmployeeById(employees, searchId);
+            if (result.has_value())
+            {
+                const Employee &foundEmployee = result.value();
+                cout << "Employee found: " << endl
+                     << foundEmployee << endl;
+            }
+            else
+            {
+                system("cls");
+                cout << "Employee not found." << endl;
+            }
+            cout << "Press Enter to continue..." << endl;
+            cin.ignore();
+            cin.get();
+            break;
+        }
+        case 3:
+        {
+            system("cls");
+            if (employees.empty())
+            {
+                cout << "No employees to display." << endl;
+            }
+            else
+            {
+                cout << "All Employees:" << endl;
+                for (const auto &emp : employees)
+                {
+                    cout << emp << endl;
+                }
+
+                int sortChoice;
+                cout << "Sort employees by: " << endl;
+                cout << "1.(Ascending)" << endl;
+                cout << "2.(Descending)" << endl;
+                cout << "Enter your choice: ";
+                cin >> sortChoice;
+
+                switch (sortChoice)
+                {
+                case 1:
+                    system("cls");
+                    employees.sort([](const Employee &emp1, const Employee &emp2)
+                                   { return emp1.getID() < emp2.getID(); });
+                    cout << "Employees sorted by ID (Ascending)." << endl;
+                    break;
+                case 2:
+                    system("cls");
+                    employees.sort([](const Employee &emp1, const Employee &emp2)
+                                   { return emp1.getID() > emp2.getID(); });
+                    cout << "Employees sorted by ID (Descending)." << endl;
+                    break;
+                default:
+                    cout << "Invalid choice. Sorting skipped." << endl;
+                    break;
+                }
+
+                cout << "Sorted Employees:" << endl;
+                for (const auto &emp : employees)
+                {
+                    cout << emp << endl;
+                }
+            }
+            cout << "Press Enter to continue..." << endl;
+            cin.ignore();
+            cin.get();
+            break;
+        }
+            using namespace std;
+
+        case 5:
+        {
+            int delID; // delete ID
+            system("cls");
+            if (employees.empty())
+            {
+                cout << "No employees to delete." << endl;
+            }
+            else
+            {
+                cout << "Enter employee ID to delete: " << endl;
+                cin >> delID;
+
+                auto predicate = [delID](const Employee &employee)
+                {
+                    return employee.getID() == delID;
+                };
+
+                auto removeIt = remove_if(employees.begin(), employees.end(), predicate);
+                if (removeIt != employees.end())
+                {
+                    cout << "This employee information will be deleted" << endl;
+                    cout << *removeIt << endl;
+
+                    employees.erase(removeIt, employees.end());
+                    cout << "Employee deleted successfully." << endl;
+                }
+                else
+                {
+                    cout << "Employee with ID " << delID << " not found." << endl;
+                }
+            }
+
+            cout << "Press Enter to continue..." << endl;
+            cin.ignore();
+            cin.get();
+
+            break;
+        }
+
+        case 6:
+        {
+            system("cls");
+            cout << "Bye Bye....." << endl;
+            break;
+        }
+        default:
+            system("cls");
+            cout << "Invalid choice. Please try again." << endl;
+            cout << "Press Enter to continue..." << endl;
+            cin.ignore();
+            cin.get();
+        }
+
+        cout << endl;
+    } while (choice != 6);
+    return 0;
 }
