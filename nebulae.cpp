@@ -29,6 +29,38 @@ private:
     string designation;
 
 public:
+    void setID(int id)
+    {
+        this->id = id;
+    }
+    void setName(string name)
+    {
+        this->name = name;
+    }
+    void setSalary(double salary)
+    {
+        this->salary = salary;
+    }
+    void setAge(int age)
+    {
+        this->age = age;
+    }
+    void setDepartment(string department)
+    {
+        this->department = department;
+    }
+    void setContactInfo(ContactInfo contactInfo)
+    {
+        this->contactInfo = contactInfo;
+    }
+    void setSex(string sex)
+    {
+        this->sex = sex;
+    }
+    void setDesignation(string designation)
+    {
+        this->designation = designation;
+    }
     int getID() const
     {
         return id;
@@ -329,6 +361,85 @@ int main()
             cout << "Press Enter to continue..." << endl;
             cin.ignore();
             cin.get();
+            break;
+        }
+        case 4:
+        {
+            int upID;
+            system("cls");
+            cout << "Enter employee ID to update: ";
+            cin >> upID;
+            auto check_search = [upID](const Employee &employee)
+            {
+                return employee.getID() == upID;
+            };
+
+            bool is_employee_found = false;
+            for (auto &employee : employees)
+            {
+                if (check_search(employee))
+                {
+                    is_employee_found = true;
+
+                    cout << "Enter updated information for employee with ID " << upID << ":" << endl;
+
+                    cout << "Enter the new name: ";
+                    string newName;
+                    cin >> newName;
+                    employee.setName(newName);
+
+                    // Continue capturing and updating other fields as required.
+                    // For example:
+                    cout << "Enter the new age: ";
+                    int newAge;
+                    cin >> newAge;
+                    employee.setAge(newAge);
+
+                    cout << "Enter the new salary: ";
+                    double newSalary;
+                    cin >> newSalary;
+                    employee.setSalary(newSalary);
+
+                    cout << "Enter the new department: ";
+                    string newDepartment;
+                    cin >> newDepartment;
+                    employee.setDepartment(newDepartment);
+
+                    // Update ContactInfo
+                    cout << "Enter the new email: ";
+                    string newEmail;
+                    cin >> newEmail;
+                    ContactInfo contactInfo = employee.getContactInfo();
+                    contactInfo.email = newEmail;
+                    employee.setContactInfo(contactInfo);
+
+                    cout << "Enter the new phone number: ";
+                    string newPhoneNumber;
+                    cin >> newPhoneNumber;
+                    contactInfo.phoneNumber = newPhoneNumber;
+                    employee.setContactInfo(contactInfo);
+
+                    cout << "Enter the new address: ";
+                    string newAddress;
+                    cin.ignore();
+                    getline(cin, newAddress);
+                    contactInfo.address = newAddress;
+                    employee.setContactInfo(contactInfo);
+
+                    cout << "Employee information updated successfully." << endl;
+                    break;
+                }
+            }
+
+            if (!is_employee_found)
+            {
+                cout << "Employee with ID " << upID << " not found." << endl;
+            }
+
+            cout << "Press Enter to continue..." << endl;
+            cin.ignore();
+            cin.get();
+
             break;
         }
 
