@@ -427,6 +427,18 @@ int main()
                     employee.setContactInfo(contactInfo);
 
                     cout << "Employee information updated successfully." << endl;
+
+                    // Save the updated employee information to the file
+                    fstream file("employees.dat", ios::out);
+                    for (const auto &emp : employees)
+                    {
+                        const ContactInfo &info = emp.getContactInfo();
+                        file << emp.getID() << " " << emp.getName() << " " << emp.getSalary() << " " << emp.getAge() << " " << emp.getDepartment() << " "
+                             << emp.getSex() << " " << emp.getDesignation() << " " << info.email << " " << info.phoneNumber
+                             << " " << info.address << endl;
+                    }
+                    file.close();
+
                     break;
                 }
             }
